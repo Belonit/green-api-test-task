@@ -5,7 +5,7 @@ import type {
   InstanceState,
 } from './api/greenApi.schemas'
 import type { Message } from './types/chat'
-import type { Connection } from './types/connection'
+import type { Connection, ConnectionStatus } from './types/connection'
 
 type Screen =
   | { type: 'connection'; initialCredentials?: Credentials }
@@ -41,7 +41,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>({ type: 'connection' })
 
   const [connectionHealth, setConnectionHealth] = useState<{
-    status: 'connected' | 'retrying'
+    status: ConnectionStatus
     error: string | null
   }>({ status: 'connected', error: null })
 
@@ -75,7 +75,7 @@ export default function App() {
   )
 
   const handlePollStatus = useCallback(
-    (status: 'connected' | 'retrying', sessionId: number, error?: string) => {
+    (status: ConnectionStatus, sessionId: number, error?: string) => {
       if (activeSession.current !== sessionId) {
         return
       }
@@ -207,7 +207,12 @@ export default function App() {
       }
 
       const knownFailure =
-        error instanceof greenApi.ApiError && error.kind === 'http'
+        error instanceof greenApi.ApiError &&
+        error.kind === 'http' &&
+        error.status !== undefined &&
+        error.status >= 400 &&
+        error.status < 500 &&
+        error.status !== 408
 
       dispatch({
         type: 'mark-outgoing',

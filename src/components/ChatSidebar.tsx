@@ -1,4 +1,5 @@
 import type { Chat } from '@/types/chat'
+import type { ConnectionStatus } from '@/types/connection'
 import type { SubmitEvent } from 'react'
 
 import { LogoMark } from './LogoMark'
@@ -16,12 +17,24 @@ import { useTranslation } from 'react-i18next'
 export type ChatSidebarProps = {
   chats: Chat[]
   selectedChatId: string | null
-  connectionStatus: 'connected' | 'retrying'
+  connectionStatus: ConnectionStatus
   connectionError: string | null
   onCreateChat: (phoneNumber: string) => Promise<void>
   onSelectChat: (chatId: string | null) => void
   onDisconnect: () => void
 }
+
+const statusClass: Record<ConnectionStatus, string> = {
+  connected: '',
+  retrying: ' reconnecting',
+  error: ' error',
+}
+
+const statusLabel = {
+  connected: 'chat.connectedInstance',
+  retrying: 'chat.reconnecting',
+  error: 'chat.connectionStopped',
+} as const
 
 function NewChatForm({
   onCreateChat,
@@ -237,18 +250,11 @@ export function ChatSidebar({
         )}
       </div>
 
-      <output
-        className={`connection-status${connectionStatus === 'retrying' ? ' reconnecting' : ''}`}
-      >
+      <output className={`connection-status${statusClass[connectionStatus]}`}>
         <span className="status-dot" />
 
-        {/* Восстанавливаем соединение… / Инстанс подключён */}
-        <span>
-          {connectionError ??
-            (connectionStatus === 'retrying'
-              ? t('chat.reconnecting')
-              : t('chat.connectedInstance'))}
-        </span>
+        {/* Восстанавливаем соединение… / Инстанс подключён / Подключение остановлено */}
+        <span>{connectionError ?? t(statusLabel[connectionStatus])}</span>
       </output>
     </aside>
   )

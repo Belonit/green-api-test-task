@@ -85,12 +85,19 @@ export const incomingTextSchema = z.object({
   timestamp: z.number(),
   senderData: z.object({
     chatId: z.string().min(1),
+    chatType: z.string().optional(),
     senderPhoneNumber: z.number().optional(),
   }),
-  messageData: z.object({
-    typeMessage: z.literal('textMessage'),
-    textMessageData: z.object({ textMessage: z.string() }),
-  }),
+  messageData: z.discriminatedUnion('typeMessage', [
+    z.object({
+      typeMessage: z.literal('textMessage'),
+      textMessageData: z.object({ textMessage: z.string() }),
+    }),
+    z.object({
+      typeMessage: z.literal('extendedTextMessage'),
+      extendedTextMessageData: z.object({ text: z.string() }),
+    }),
+  ]),
 })
 
 export type IncomingText = {

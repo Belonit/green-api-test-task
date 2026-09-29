@@ -1,4 +1,5 @@
 import type { Chat, Message } from '@/types/chat'
+import type { ConnectionStatus } from '@/types/connection'
 import type { KeyboardEvent, SubmitEvent } from 'react'
 
 import { messageSchema } from '@/api/greenApi.schemas'
@@ -12,11 +13,23 @@ import { useTranslation } from 'react-i18next'
 
 export type ConversationProps = {
   chat: Chat | null
-  connectionStatus: 'connected' | 'retrying'
+  connectionStatus: ConnectionStatus
   onSelectChat: (chatId: string | null) => void
   onDraftChange: (chatId: string, draft: string) => void
   onSend: (chatId: string) => void
 }
+
+const statusClass: Record<ConnectionStatus, string> = {
+  connected: '',
+  retrying: ' reconnecting',
+  error: ' error',
+}
+
+const statusLabel = {
+  connected: 'chat.connected',
+  retrying: 'chat.reconnectingShort',
+  error: 'chat.connectionStopped',
+} as const
 
 function MessageBubble({ message }: { message: Message }) {
   const { t } = useTranslation()
@@ -270,12 +283,8 @@ export function Conversation({
 
         {/* Восстанавливаем связь / Подключено */}
         <output
-          className={`header-status${connectionStatus === 'retrying' ? ' reconnecting' : ''}`}
-          aria-label={
-            connectionStatus === 'retrying'
-              ? t('chat.reconnectingShort')
-              : t('chat.connected')
-          }
+          className={`header-status${statusClass[connectionStatus]}`}
+          aria-label={t(statusLabel[connectionStatus])}
         >
           <span aria-hidden="true" />
         </output>

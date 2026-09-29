@@ -16,6 +16,7 @@
     ],
     "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
     "curly": ["error", "all"],
+    "no-nested-ternary": "error",
     "prefer-const": "error",
     "no-debugger": "error",
     "no-restricted-imports": [

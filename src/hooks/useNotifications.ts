@@ -1,5 +1,5 @@
 import type { IncomingText } from '@/api/greenApi.schemas'
-import type { Connection } from '@/types/connection'
+import type { Connection, ConnectionStatus } from '@/types/connection'
 
 import * as greenApi from '@/api/greenApi'
 import i18n from '@/i18n'
@@ -27,7 +27,7 @@ export function useNotifications(
   connection: Connection | null,
   onIncoming: (message: IncomingText, sessionId: number) => void,
   onStatus: (
-    status: 'connected' | 'retrying',
+    status: ConnectionStatus,
     sessionId: number,
     error?: string,
   ) => void,
@@ -86,6 +86,14 @@ export function useNotifications(
             signal.aborted ||
             (error instanceof Error && error.name === 'AbortError')
           ) {
+            return
+          }
+
+          if (
+            error instanceof greenApi.ApiError &&
+            (error.status === 401 || error.status === 403)
+          ) {
+            onStatus('error', currentConnection.sessionId, error.message)
             return
           }
 

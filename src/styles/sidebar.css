@@ -297,6 +297,11 @@
   animation: reconnect-pulse 1.5s ease-in-out infinite;
 }
 
+.connection-status.error .status-dot,
+.header-status.error span {
+  background: var(--color-danger);
+}
+
 @keyframes reconnect-pulse {
   50% {
     opacity: 0.55;

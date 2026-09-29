@@ -13,6 +13,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public readonly kind: 'network' | 'http' | 'invalid-response',
+    public readonly status?: number,
   ) {
     super(message)
     this.name = 'ApiError'
@@ -24,6 +25,8 @@ function httpError(status: number, reason: string): ApiError {
 
   if (status === 401 || (status === 403 && !reason.includes('suspend'))) {
     message = i18n.t('api.credentials') // Проверьте ID инстанса и API-токен.
+  } else if (status === 429) {
+    message = i18n.t('api.rateLimit') // Слишком много запросов к GREEN-API. Повторяем позже.
   } else if (status === 466) {
     message = i18n.t('api.chatLimit') // Достигнут лимит трёх чатов тарифа MAX Developer.
   } else if (reason.includes('custom webhook url')) {
@@ -34,7 +37,7 @@ function httpError(status: number, reason: string): ApiError {
     message = i18n.t('api.http', { status }) // Ошибка API ({{status}}). Проверьте настройки и повторите попытку.
   }
 
-  return new ApiError(message, 'http')
+  return new ApiError(message, 'http', status)
 }
 
 function apiPath(credentials: Credentials, method: string): string {
@@ -50,9 +53,15 @@ async function request(
     method?: 'GET' | 'POST' | 'DELETE'
     body?: unknown
     signal?: AbortSignal
+    timeoutMs?: number
   } = {},
 ): Promise<unknown> {
   let response: Response
+  let text: string
+  const timeout = AbortSignal.timeout(options.timeoutMs ?? 20_000)
+  const signal = options.signal
+    ? AbortSignal.any([options.signal, timeout])
+    : timeout
 
   try {
     response = await fetch(url, {
@@ -66,43 +75,48 @@ async function request(
           ? undefined
           : JSON.stringify(options.body),
       cache: 'no-store',
-      signal: options.signal,
+      signal,
     })
-  } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw error
+    text = await response.text()
+  } catch {
+    if (options.signal?.aborted) {
+      throw new DOMException('Aborted', 'AbortError')
     }
 
     throw new ApiError(
-      i18n.t('api.network'), // Нет доступа к API. Проверьте ваше подключение
+      timeout.aborted //
+        ? i18n.t('api.timeout') // GREEN-API не ответил вовремя. Проверьте соединение и повторите попытку.
+        : i18n.t('api.network'), // Нет доступа к API. Проверьте ваше подключение
       'network',
     )
   }
 
-  const text = await response.text()
-  let data: unknown = null
-
-  if (text) {
-    try {
-      data = JSON.parse(text) as unknown
-    } catch {
-      throw new ApiError(
-        i18n.t('api.invalidJson'), // API вернул ответ в неизвестном формате.
-        'invalid-response',
-      )
-    }
-  }
-
   if (!response.ok) {
-    const reason =
-      typeof data === 'object' && data !== null && 'reason' in data
-        ? String(data.reason).toLowerCase()
-        : ''
+    let reason = ''
+    try {
+      const data: unknown = JSON.parse(text)
+      if (typeof data === 'object' && data !== null && 'reason' in data) {
+        reason = String(data.reason).toLowerCase()
+      }
+    } catch {
+      // Статус HTTP важнее формата тела ошибки.
+    }
 
     throw httpError(response.status, reason)
   }
 
-  return data
+  if (!text) {
+    return null
+  }
+
+  try {
+    return JSON.parse(text) as unknown
+  } catch {
+    throw new ApiError(
+      i18n.t('api.invalidJson'), // API вернул ответ в неизвестном формате.
+      'invalid-response',
+    )
+  }
 }
 
 function parse<T>(schema: ZodType<T>, data: unknown): T {
@@ -199,6 +213,7 @@ export async function receiveNotification(
     `${apiPath(credentials, 'receiveNotification')}?receiveTimeout=5`,
     {
       signal,
+      timeoutMs: 12_000,
     },
   )
 
@@ -236,11 +251,21 @@ export function readIncomingText(body: unknown): IncomingText | null {
 
   const value = result.data
 
+  if (
+    value.senderData.chatType === 'group' ||
+    value.senderData.chatId.startsWith('-')
+  ) {
+    return null
+  }
+
   return {
     chatId: value.senderData.chatId,
     phoneNumber: value.senderData.senderPhoneNumber?.toString(),
     idMessage: value.idMessage,
-    text: value.messageData.textMessageData.textMessage,
-    timestamp: value.timestamp * 1000,
+    text:
+      value.messageData.typeMessage === 'textMessage'
+        ? value.messageData.textMessageData.textMessage
+        : value.messageData.extendedTextMessageData.text,
+    timestamp: value.timestamp * 1_000,
   }
 }

@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint src",
-    "lint:spelling": "cspell lint . --exclude \"**/*.md\"",
+    "lint:spelling": "cspell lint .",
     "format": "oxfmt src vite.config.ts",
     "format:check": "oxfmt --check src vite.config.ts"
   },

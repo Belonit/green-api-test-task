@@ -4,6 +4,10 @@
   "import": ["@cspell/dict-ru_ru/cspell-ext.json"],
   "overrides": [
     {
+      "filename": "**/*.md",
+      "language": "en,ru-RU"
+    },
+    {
       "filename": "src/i18n/locales/ru-RU/index.json",
       "language": "en,ru-RU"
     }
@@ -20,6 +24,8 @@
   ],
   "words": [
     //
-    "Lngs"
+    "Lngs",
+    "Noto",
+    "Фронтенд"
   ]
 }

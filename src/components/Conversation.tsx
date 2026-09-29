@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 export type ConversationProps = {
   chat: Chat | null
   connectionStatus: ConnectionStatus
+  connectionError: string | null
   onSelectChat: (chatId: string | null) => void
   onDraftChange: (chatId: string, draft: string) => void
   onSend: (chatId: string) => void
@@ -236,6 +237,7 @@ function MessageComposer({
 export function Conversation({
   chat,
   connectionStatus,
+  connectionError,
   onSelectChat,
   onDraftChange,
   onSend,
@@ -281,14 +283,23 @@ export function Conversation({
           <strong>+{chat.phoneNumber}</strong>
         </div>
 
-        {/* Восстанавливаем связь / Подключено */}
+        {/* Восстанавливаем связь / Подключено / Подключение остановлен */}
         <output
           className={`header-status${statusClass[connectionStatus]}`}
-          aria-label={t(statusLabel[connectionStatus])}
+          aria-label={connectionError ?? t(statusLabel[connectionStatus])}
         >
           <span aria-hidden="true" />
         </output>
       </header>
+
+      {connectionStatus !== 'connected' && (
+        <div
+          className="conversation-connection-warning"
+          role={connectionStatus === 'error' ? 'alert' : 'status'}
+        >
+          <span>{connectionError ?? t(statusLabel[connectionStatus])}</span>
+        </div>
+      )}
 
       <MessageList key={chat.id} chat={chat} />
 

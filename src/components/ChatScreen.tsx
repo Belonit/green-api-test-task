@@ -17,6 +17,7 @@ export function ChatScreen(props: ChatScreenProps) {
       <Conversation
         chat={selectedChat}
         connectionStatus={props.connectionStatus}
+        connectionError={props.connectionError}
         onSelectChat={props.onSelectChat}
         onDraftChange={props.onDraftChange}
         onSend={props.onSend}

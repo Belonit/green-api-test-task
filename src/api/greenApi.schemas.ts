@@ -62,15 +62,16 @@ export const settingsSchema = z.object({
 export type InstanceSettings = z.infer<typeof settingsSchema>
 
 export const accountSchema = z.union([
-  z.object({ exist: z.boolean(), chatId: z.string() }),
-  z.object({ status: z.literal(false), reason: z.string() }),
+  z.object({ exist: z.literal(true), chatId: z.string().trim().min(1) }),
+  z.object({ exist: z.literal(false), chatId: z.literal('') }),
+  z.object({ status: z.literal(false), reason: z.string().min(1) }),
 ])
 
 export const sentSchema = z.object({ idMessage: z.string().min(1) })
 
 export const notificationSchema = z.object({
-  receiptId: z.number().int(),
-  body: z.unknown(),
+  receiptId: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+  body: z.record(z.string(), z.unknown()),
 })
 
 export type ApiNotification = z.infer<typeof notificationSchema>

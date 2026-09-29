@@ -17,6 +17,19 @@
   background: var(--color-surface);
 }
 
+.conversation-connection-warning {
+  flex: none;
+  padding: 10px 20px;
+  color: #674d12;
+  background: #fff7df;
+  font-size: 0.75rem;
+}
+
+.conversation-connection-warning span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .conversation-person {
   display: grid;
   flex: 1;

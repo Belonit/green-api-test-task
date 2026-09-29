@@ -270,15 +270,25 @@
   font-size: 0.625rem;
 }
 
+.connection-footer {
+  flex: none;
+  padding: 8px 16px 12px;
+  border-top: 0.0625rem solid #edf0f6;
+}
+
 .connection-status {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 56px;
-  padding: 12px 24px;
-  border-top: 0.0625rem solid #edf0f6;
+  min-height: 36px;
+  padding: 4px 8px;
   color: var(--color-text-muted);
   font-size: 0.6875rem;
+}
+
+.connection-status-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .status-dot,

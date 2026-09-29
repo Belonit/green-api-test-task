@@ -250,12 +250,14 @@ export function ChatSidebar({
         )}
       </div>
 
-      <output className={`connection-status${statusClass[connectionStatus]}`}>
-        <span className="status-dot" />
-
-        {/* Восстанавливаем соединение… / Инстанс подключён / Подключение остановлено */}
-        <span>{connectionError ?? t(statusLabel[connectionStatus])}</span>
-      </output>
+      <div className="connection-footer">
+        <output className={`connection-status${statusClass[connectionStatus]}`}>
+          <span className="status-dot" />
+          <span className="connection-status-text">
+            {connectionError ?? t(statusLabel[connectionStatus])}
+          </span>
+        </output>
+      </div>
     </aside>
   )
 }

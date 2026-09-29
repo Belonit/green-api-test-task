@@ -41,33 +41,46 @@ export function useNotifications(
     const controller = new AbortController()
     const { signal } = controller
     let failures = 0
+    let pendingReceiptId: number | null = null
+    let acknowledgementFailures = 0
 
     async function poll() {
       while (!signal.aborted) {
         try {
-          const notification = await greenApi.receiveNotification(
-            currentConnection,
-            signal,
-          )
-          if (signal.aborted) {
-            return
-          }
+          let receivedNotification = false
 
-          if (notification) {
-            const incoming = greenApi.readIncomingText(notification.body)
-            if (incoming) {
-              onIncoming(incoming, currentConnection.sessionId)
-            }
-
-            await greenApi.deleteNotification(
+          if (pendingReceiptId === null) {
+            const notification = await greenApi.receiveNotification(
               currentConnection,
-              notification.receiptId,
               signal,
             )
+            if (signal.aborted) {
+              return
+            }
+
+            if (notification) {
+              receivedNotification = true
+              const incoming = greenApi.readIncomingText(notification.body)
+              if (incoming) {
+                onIncoming(incoming, currentConnection.sessionId)
+              }
+              pendingReceiptId = notification.receiptId
+            }
+          }
+
+          if (pendingReceiptId !== null) {
+            await greenApi.deleteNotification(
+              currentConnection,
+              pendingReceiptId,
+              signal,
+            )
+            pendingReceiptId = null
+            acknowledgementFailures = 0
           }
 
           failures = 0
           onStatus('connected', currentConnection.sessionId)
+          await pause(receivedNotification ? 150 : 500, signal)
         } catch (error) {
           if (
             signal.aborted ||
@@ -77,6 +90,14 @@ export function useNotifications(
           }
 
           failures += 1
+          if (pendingReceiptId !== null) {
+            acknowledgementFailures += 1
+            if (acknowledgementFailures >= 3) {
+              // Сверяемся с очередью: DELETE мог выполниться, а ответ потеряться.
+              pendingReceiptId = null
+              acknowledgementFailures = 0
+            }
+          }
           onStatus(
             'retrying',
             currentConnection.sessionId,
@@ -85,7 +106,10 @@ export function useNotifications(
               : i18n.t('app.pollFailed'), // Не удалось проверить настройки. Повторите попытку.
           )
 
-          await pause(Math.min(failures * 2000, 10000), signal)
+          await pause(
+            Math.min(1_000 * 2 ** Math.min(failures - 1, 5), 30_000),
+            signal,
+          )
         }
       }
     }

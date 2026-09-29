@@ -1,0 +1,86 @@
+:root {
+  color-scheme: light;
+
+  --color-text: #20283d;
+  --color-text-strong: #253047;
+  --color-text-secondary: #53627a;
+  --color-text-muted: #7d8ba3;
+  --color-text-subtle: #a3adc0;
+  --color-text-faint: #a7b1bf;
+  --color-accent: #5271eb;
+  --color-accent-hover: #4568ed;
+  --color-accent-soft: #edf2ff;
+  --color-accent-subtle: #f9faff;
+  --color-border: #e8edf5;
+  --color-border-accent: #b9c9ff;
+  --color-surface: #fff;
+  --color-surface-page: #f1f4fa;
+  --color-danger: #a43d4a;
+  --color-danger-surface: #fff1f1;
+  --color-success: #247250;
+  --color-success-indicator: #40bf8a;
+  --color-warning-indicator: #e9ad43;
+  --color-focus: rgba(82, 120, 247, 0.42);
+  --radius-control: 12px;
+  --radius-card: 24px;
+
+  font-family:
+    'Noto Sans',
+    'Noto Color Emoji',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  color: var(--color-text);
+  background: var(--color-surface-page);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 0.1875rem solid var(--color-focus);
+  outline-offset: 0.125rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  padding: 0;
+  margin: -0.0625rem;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

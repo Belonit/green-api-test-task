@@ -1,0 +1,47 @@
+.logo-mark {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-card);
+}
+
+.icon-button {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--radius-control);
+  color: var(--color-text-muted);
+  background: transparent;
+
+  &:hover {
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.primary-button {
+  border: 0;
+  border-radius: var(--radius-control);
+  color: var(--color-surface);
+  background: #5577f4;
+  font-weight: 700;
+  box-shadow: 0 0.5625rem 1.125rem rgba(66, 99, 228, 0.19);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+  }
+
+  &:disabled {
+    opacity: 0.64;
+  }
+}

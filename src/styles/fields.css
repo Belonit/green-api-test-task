@@ -1,0 +1,42 @@
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field label {
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.field input {
+  min-width: 0;
+  width: 100%;
+  height: 52px;
+  border: 0.0625rem solid #dde4f0;
+  border-radius: var(--radius-control);
+  background: #f9fbff;
+  color: var(--color-text-body);
+  padding: 0 16px;
+  outline: 0;
+}
+
+.field input:focus {
+  border-color: #7390f8;
+}
+
+.field input::placeholder,
+.composer textarea::placeholder {
+  color: #a3adc0;
+}
+
+.field input[aria-invalid='true'],
+.phone-control.invalid {
+  border-color: #e68585;
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: 12px;
+  line-height: 1.4;
+}

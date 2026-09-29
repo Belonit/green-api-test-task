@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/@cspell/cspell-types/cspell.schema.json",
+  "language": "en",
+  "import": ["@cspell/dict-ru_ru/cspell-ext.json"],
+  "overrides": [
+    {
+      "filename": "src/i18n/locales/ru-RU/index.json",
+      "language": "en,ru-RU"
+    }
+  ],
+  "allowCompoundWords": true,
+  "useGitignore": true,
+  "ignorePaths": [
+    //
+    "./package.json"
+  ],
+  "ignoreRegExpList": [
+    "CStyleComment",
+    "/<!--.*/" // XMLStyleComment
+  ],
+  "words": [
+    //
+    "Lngs"
+  ]
+}

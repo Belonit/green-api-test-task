@@ -1,0 +1,33 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "react",
+    "jsx-a11y"
+  ],
+  "rules": {
+    "typescript/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports", "fixStyle": "separate-type-imports" }
+    ],
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    "curly": ["error", "all"],
+    "prefer-const": "error",
+    "no-debugger": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["../**"],
+            "message": "Use @/ imports for paths outside the current directory."
+          }
+        ]
+      }
+    ]
+  }
+}

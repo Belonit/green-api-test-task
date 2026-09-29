@@ -1,0 +1,40 @@
+{
+  "name": "green-api-max-chat",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Belonit <54427022+Belonit@users.noreply.github.com>",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src",
+    "lint:spelling": "cspell lint . --exclude \"**/*.md\"",
+    "format": "oxfmt src vite.config.ts",
+    "format:check": "oxfmt --check src vite.config.ts"
+  },
+  "dependencies": {
+    "i18next": "^26.4.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-i18next": "^17.0.15",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@cspell/dict-ru_ru": "^2.3.2",
+    "@types/node": "^24.19.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "cspell": "^10.3.5",
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1",
+    "vite-plugin-svgr": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

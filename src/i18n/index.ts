@@ -11,6 +11,7 @@ void i18n.use(initReactI18next).init({
   fallbackLng: 'ru-RU',
   supportedLngs: ['ru-RU'],
   defaultNS,
+  pluralSeparator: '.',
   initAsync: false,
   interpolation: { escapeValue: false },
 })

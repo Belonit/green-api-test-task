@@ -83,10 +83,12 @@
     "openChat": "Открыть чат",
     "createFailed": "Не удалось создать чат. Повторите попытку.",
     "startCorrespondence": "Начните переписку",
-    "unread_one": "{{count}} новое сообщение",
-    "unread_few": "{{count}} новых сообщения",
-    "unread_many": "{{count}} новых сообщений",
-    "unread_other": "{{count}} новых сообщений",
+    "unread": {
+      "one": "{{count}} новое сообщение",
+      "few": "{{count}} новых сообщения",
+      "many": "{{count}} новых сообщений",
+      "other": "{{count}} новых сообщений"
+    },
     "disconnect": "Отключиться",
     "chats": "Чаты",
     "chatList": "Список чатов",

@@ -156,7 +156,7 @@ function ChatListItem({
 
   return (
     // Переписка: {{name}}
-    // {{count}} новое сообщение / {{count}} новых сообщения / {{count}} новых сообщений
+    // {{count}} новых сообщения
     <button
       className={`chat-item${selected ? ' selected' : ''}`}
       type="button"
